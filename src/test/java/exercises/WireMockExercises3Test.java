@@ -35,6 +35,33 @@ public class WireMockExercises3Test {
          * - 3. A second GET (when in state 'LOAN_GRANTED') to /loan/12345
          *      returns HTTP 200 and body 'Loan ID: 12345'
          ************************************************/
+        stubFor(get(urlEqualTo("/loan/12345"))
+                .willReturn(aResponse()
+                        .withStatus(404)));
+
+
+        stubFor(post(urlEqualTo("/requestLoan"))
+                        .inScenario("Loan processing")
+                        .whenScenarioStateIs(Scenario.STARTED)
+                        .withRequestBody(equalTo("Loan ID: 12345"))
+                        .willReturn(aResponse()
+                                .withStatus(201)
+                        )
+                        .willSetStateTo("LOAN_GRANTED")
+
+
+        );
+
+        stubFor(get(urlEqualTo("/loan/12345"))
+                .inScenario("Loan processing")
+                .whenScenarioStateIs("LOAN_GRANTED")
+                .willReturn(aResponse()
+                                .withStatus(200)
+                                .withBody("Loan ID: 12345")
+                                )
+
+        );
+
 
     }
 

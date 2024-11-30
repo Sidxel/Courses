@@ -11,7 +11,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 
 @WireMockTest(httpPort = 9876)
-public class WireMockAnswers1Test {
+public class
+WireMockAnswers1Test {
 
 	private RequestSpecification requestSpec;
 

@@ -40,6 +40,11 @@ public class WireMockExercises2Test {
          * under 'Setting the response status message'
          * for an example of how to do this
          ************************************************/
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .willReturn(aResponse()
+                        .withStatus(503)
+                        .withStatusMessage("Loan processor service unavailable")
+                ));
 
     }
 
@@ -53,6 +58,12 @@ public class WireMockExercises2Test {
          * Respond with status code 200, but only after a
          * fixed delay of 3000 milliseconds.
          ************************************************/
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .willReturn(aResponse()
+                        .withHeader("speed","slow" )
+                        .withStatus(200)
+                        .withFixedDelay(3000)
+                ));
 
     }
 
@@ -65,6 +76,11 @@ public class WireMockExercises2Test {
          *
          * Respond with a Fault of type RANDOM_DATA_THEN_CLOSE
          ************************************************/
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .withCookie("session", equalTo("invalid"))
+                .willReturn(aResponse()
+                        .withFault(Fault.RANDOM_DATA_THEN_CLOSE)
+                ));
 
     }
 
@@ -77,6 +93,11 @@ public class WireMockExercises2Test {
          * - the 'backgroundCheck' header has value 'OK', OR
          * - the 'backgroundCheck' header is not present
          ************************************************/
+        stubFor(post(urlEqualTo("/requestLoan"))
+                        .withHeader("backgroundCheck", equalTo("OK").or(absent()))
+                        .willReturn(aResponse()
+                                .withStatus(200)
+                ));
 
     }
 
@@ -91,6 +112,13 @@ public class WireMockExercises2Test {
          * The loan amount is specified in the 'amount'
          * field, which is a child element of 'loanDetails'
          ************************************************/
+        stubFor(post(urlEqualTo("/requestLoan"))
+                .withRequestBody(
+                        matchingJsonPath("$.loanDetails[?(@.amount == '1000')]")
+                )
+                .willReturn(aResponse()
+                        .withStatus(200))
+        );
 
     }
 
